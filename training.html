@@ -1,0 +1,142 @@
+<!--
+JATOS online experiment.
+Working memory - Exogenous attention
+
+Task date: 01082020 
+-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head> <!--Contains metadata information about the document-->
+	
+	<meta charset = "UTF-8">
+	<title>Exogenous Attention</title> <!--specifies title for the document-->
+	
+	<link href = "css/jspsych.css" rel="stylesheet" type="text/css"></link>
+	
+	<script src = "js/jspsych.js"></script>
+	<script src = "snap_svg/snap.svg-min.js"></script>
+
+	<script src = "js/plugins/static/jspsych-html-keyboard-response.js"></script>
+	<script src = "js/plugins/static/jspsych-image-keyboard-response.js"></script>
+	<script src = "js/plugins/static/jspsych-fullscreen.js"></script>
+	<script src = "js/plugins/static/jspsych-resize.js"></script>
+	<script src = "js/plugins/static/jspsych-single-stim.js"></script>
+	<script src = "js/plugins/static/jspsych-call-function.js"></script>
+	<script src = "js/plugins/self/external_arrays.js"></script>
+	
+	<script src = "js/training.js"></script>
+
+	<script src = "/assets/javascripts/jatos.js"></script>
+
+</head>
+
+<body> <!--contains the visible page content-->
+
+	<svg id = "svg"></svg>
+
+</body>
+<script>
+	//--------------------------------------------
+	// setting background colour to gray.      
+	//--------------------------------------------
+	window.addEventListener("load",function() 
+	{ 
+		document.body.style.background = '#666666';
+	});
+
+	//--------------------------------------------
+	// creating global variables
+	//--------------------------------------------
+	var timeline = [];
+	var subjectNum = 0;
+	var is_configure = 0;
+
+	var trialData;
+	var all_trialData = [];
+	var all_blockData = [];
+	var response;
+
+	var changeAngleData = [];
+
+	//--------------------------------------------
+	var s = Snap('#svg'); //snap svg
+	win_x =  screen.width;
+	win_y =  screen.height;
+	var s = Snap(win_x, win_y);
+
+	//--------------------------------------------
+	// JATOS code component
+	//--------------------------------------------
+	jatos.onLoad(function(){
+
+		timeline = timeline.concat(createTimeline());
+
+		//--------------------------------------------
+		// jsPsych code component
+		//--------------------------------------------
+
+		// start experiment
+		jsPsych.init(
+		{	
+			timeline: timeline, 
+
+			on_trial_finish: function(data)
+			{
+				if(data.is_trialData)
+				{
+					trialData = JSON.stringify({subjectNum: data.subjectNum, blockNum: data.blockNum, trialNum:data.trialNum, WM_cue: data.WM_cue, initialAngles: data.initialAngles, finalAngles: data.finalAngles, delayDurationFixation: data.delayDurationFixation, delayDuration: data.delayDuration, changeState: data.changeState, changeDirection: data.changeDirection, WM_Probe: data.WM_Probe, Response_AFC: data.Response_AFC, RT_AFC: data.RT_AFC}); 
+
+					all_trialData.push(trialData);
+					all_blockData.push(trialData);
+					
+					if(data.Response_AFC == -1)
+						{ response = -1; }
+					else if(data.changeState[data.WM_Probe-1] == data.Response_AFC)
+						{ response = 1; }
+					else if(data.changeState[data.WM_Probe-1] != data.Response_AFC)
+						{ response = 0; }
+					else
+						{ response = 99; } // error
+
+					jatos.appendResultData(data.WM_cue+" "+data.WM_Probe+" "+response+", ");
+				
+					if(data.trialNum == n_practiceTrials)
+					{
+						jatos.uploadResultFile(all_trialData, data.subjectNum+"_block"+data.blockNum+".txt");
+						all_trialData = [];
+						jatos.uploadResultFile(changeAngleData, subjectNum+"_staircaseData.txt");
+					}
+				}
+
+				if(data.is_staircaseData)
+				{
+					changeAngleData_json =  JSON.stringify({changeAngle: data.oldChangeAngle, meanCorrect: data.meanCorrect});
+					changeAngleData.push(changeAngleData_json);
+				}
+
+			},
+			on_close: function(data) 
+			{
+	    		jatos.uploadResultFile(all_blockData, subjectNum+"_allTrials.txt");
+	    		jatos.uploadResultFile(changeAngleData, subjectNum+"_staircaseData.txt");
+			},
+			on_finish: function(data)
+			{
+				jsPsych.data.displayData();
+			}
+		})
+
+		window.onbeforeunload = (function(msg) 
+		{
+			var msg = "It is important to do this experiment all at once. "
+					+ "Are you sure you want to close this window?";
+			return msg;
+		});
+	})
+
+</script>
+
+</html>
