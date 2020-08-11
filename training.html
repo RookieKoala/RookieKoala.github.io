@@ -29,7 +29,7 @@ Task date: 01082020
 	
 	<script src = "js/training.js"></script>
 
-	<script src = "/assets/javascripts/jatos.js"></script>
+	<!--script src = "/assets/javascripts/jatos.js"></script-->
 
 </head>
 
@@ -70,7 +70,7 @@ Task date: 01082020
 	//--------------------------------------------
 	// JATOS code component
 	//--------------------------------------------
-	jatos.onLoad(function(){
+//	jatos.onLoad(function(){
 
 		timeline = timeline.concat(createTimeline());
 
@@ -83,7 +83,7 @@ Task date: 01082020
 		{	
 			timeline: timeline, 
 
-			on_trial_finish: function(data)
+/*			on_trial_finish: function(data)
 			{
 				if(data.is_trialData)
 				{
@@ -127,7 +127,7 @@ Task date: 01082020
 			{
 				jsPsych.data.displayData();
 			}
-		})
+*/		})
 
 		window.onbeforeunload = (function(msg) 
 		{
@@ -135,7 +135,7 @@ Task date: 01082020
 					+ "Are you sure you want to close this window?";
 			return msg;
 		});
-	})
+//	})
 
 </script>
 

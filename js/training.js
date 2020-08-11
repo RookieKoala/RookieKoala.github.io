@@ -593,7 +593,7 @@ function ResponseBlock(duration, probe_pos)
 	{
 		type:"html-keyboard-response",
 		trial_duration: duration,
-		choices: [37, 39], // left (no change) - 37; right (change) - 39
+		choices: [90, 77], // left (no change) - 90; right (change) - 77
 		stimulus: function(data)
 		{
 			a = (new Date()).getTime();
@@ -626,7 +626,7 @@ function ResponseBlock(duration, probe_pos)
 */ 		on_finish: function(data)
   		{
   			// recording subject data
-			sub_response = [37, 39].indexOf(data.key_press); // 0 for no change and 1 for change
+			sub_response = [90, 77].indexOf(data.key_press); // 0 for no change and 1 for change
   			if(data.rt == null) { sub_RT = data.rt; }
   			else { sub_RT = (data.rt).toFixed(2); }
 
@@ -877,7 +877,7 @@ var full_screen =
 var welcome_block = 
 {
 	type: "html-keyboard-response",
-	stimulus: "Welcome to the practice experiment..</p><p>Press any key to "
+	stimulus: "<p style = 'font-size:20px'>Welcome to the practice experiment..</p><p style = 'font-size:20px'>Press any key to "
 			  +"begin.</p>",
 };
 
@@ -887,7 +887,7 @@ var inputs =
   type: 'resize',
   item_width: 3 + 3/8,
   item_height: 2 + 1/8,
-  prompt: "<p>Click and drag the lower right corner of the box until it is the size of a credit card held up to the screen.</p>",
+  prompt: "<p style = 'font-size:20px'>Click and drag the lower right corner of the box until it is the size of a credit card held up to the screen.</p>",
   pixels_per_unit: 135
 };
 
@@ -895,29 +895,38 @@ var inputs =
 var instructions = 
 {
 	type: "html-keyboard-response",
-	stimulus: "<p><strong>INSTRUCTIONS</strong></p><p>In this experiment, "
-			  +"there will be 4 placeholders on the "
+	stimulus: "<p style = 'font-size:27px'><strong>INSTRUCTIONS</strong></p><p style = 'font-size:27px'>In this experiment, "
+			  +"there will be 4 circular placeholders on the "
 			  +"screen. You need to maintain eye fixation on the "
 			  +"dot at the centre of the screen throughout the duration of the"
-			  +" experiment.</p><p>Each of the placeholders will contain a "
-			  +"randomly oriented bar. You will be given a few milliseconds "
+			  +" experiment.</p><p style = 'font-size:27px'>Each of the placeholders will contain a "
+			  +"randomly oriented bar. You will be given a small duration of "
 			  +"time to memorise the orientations at their respective "
 			  +"locations. Shortly after, there may be a a brief flash "
 			  +"on any one of the arcs located adjacent to the placeholders. "
-			  +"This has no relevancy to the task in the experiment.</p><p>" 
+			  +"This has no relevancy to the task in the experiment.</p><p style = 'font-size:27px'>" 
 			  +"The next screen will consist of another 4 oriented bars but "
-			  +"with one or more bars having changed angles. One of quadrants "
+			  +"with any number of bars having changed angles. One of quadrants "
 			  +"of the dot at the centre will have changed to yellow. This "
 			  +"indicates the location where you are being probed about "
 			  +"whether a change has occured from the first set of oriented "
-			  +"bars.</p><p>To indicate a <strong>change</strong>, press the "
-			  +"<strong>right arrow key</strong>, and to indicate a "
-			  +"<strong>no change</strong>, press the <strong>left arrow key"
-			  +"</strong>.</p><p>There are 40 such trials, in a single block. "
-			  +"You are required to complete 10 such blocks. You will be able "
-			  +"to take breaks in between each block.</p><p>Press any key "
-			  +"to continue.</p>",
+			  +"bars.</p><p style = 'font-size:27px'>To indicate a <strong>change</strong>, press the "
+			  +"<strong>'m' key</strong>, and to indicate a "
+			  +"<strong>no change</strong>, press the <strong>'z' key"
+			  +"</strong>.</p><p style = 'font-size:27px'>There are 64 such trials, in a single block. "
+			  +"You are required to complete 8 such blocks. You will be able "
+			  +"to take breaks in between each block.</p><p style = 'font-size:27px'>Press any key "
+			  +"to continue.</p>"
 };
+
+// example image
+var example = 
+{
+	type: "image-keyboard-response",
+	stimulus: 'image/example.png',
+	prompt: "<p style = 'font-size:30px'>This is an example of sequence of events occuring "
+			+"in a single trial."
+} 
 
 //--------------------------------------------
 // DURING THE EXPERIMENT
@@ -956,8 +965,8 @@ function pre_block_msg(blockNum, isTrial1)
 				//------------------------------------------------------------------
 			}
 
-			return "<p>This is experiment block - "+(blockNum)+"</p>"
-				   +"<p>Press any key to start the block.</p>";
+			return "<p style = 'font-size:25px'>This is experiment block - "+(blockNum)+"</p>"
+				   +"<p style = 'font-size:25px'>Press any key to start the block.</p>";
 		},
 		on_finish: function(data)
 		{
@@ -999,8 +1008,8 @@ function post_block_msg(curr_totalTrialNum)
 
 			var accuracy = (countCorrect/curr_totalTrialNum).toFixed(4);
 
-			return "Accuracy: "+accuracy+"</p>"
-				  +"<p>You can now take a break. To begin the next block"
+			return "<p style = 'font-size:20px'>Accuracy: "+accuracy+"</p>"
+				  +"<p style = 'font-size:20px'>You can now take a break. To begin the next block"
 				  +", <strong>press any key</strong>.</p>";
 		},
 		on_finish: function(data)
@@ -1032,7 +1041,7 @@ function createTimeline()
 	var exp_timeline = [];
 	jsPsych.data.addProperties({subjectNum: subjectNum});
 //	noise_str = generateNoiseMask();
-	exp_timeline.push(full_screen, welcome_block, inputs, instructions);
+	exp_timeline.push(full_screen, welcome_block, inputs, instructions, example);
 
 	var curr_totalTrialNum = 0;
 	var isTrial1 = 1;
